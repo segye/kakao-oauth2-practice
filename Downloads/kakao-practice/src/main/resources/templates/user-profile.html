@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+<div th:if="${username != null}">
+    <img th:src="${profileImage}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%;">
+    <h1 th:text="${username}">User Name</h1>
+    <a th:href="@{/logout}">Logout</a>
+</div>
+<div th:if="${username == null}">
+    <p>You are not logged in. <a th:href="@{/login}">Login</a></p>
+</div>
+</body>
+</html>
