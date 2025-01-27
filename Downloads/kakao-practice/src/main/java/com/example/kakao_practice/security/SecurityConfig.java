@@ -2,6 +2,7 @@ package com.example.kakao_practice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -50,6 +52,10 @@ public class SecurityConfig {
 				.addLogoutHandler(logoutHandler)
 				.invalidateHttpSession(true)
 				.logoutSuccessUrl("/home-view")
+				.logoutSuccessHandler((request, response, authentication) -> {
+					response.setStatus(HttpStatus.OK.value());
+					response.getWriter().write("{\"message\" : \"로그아웃 성공\"}");
+				})
 			)
 			.addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

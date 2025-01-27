@@ -1,7 +1,6 @@
 package com.example.kakao_practice.security;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -36,11 +35,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
 		if (jwt == null) {
 			jwt = rq.getCookie("access-token");
-		}
-
-		if (jwt == null && request.getRequestURI().equals("/home-view")) { // 최초 로그인시
-			filterChain.doFilter(request, response);
-			return;
 		}
 
 		Authentication authentication = null;
@@ -90,6 +84,12 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		String requestURI = request.getRequestURI();
+		return requestURI.matches("/home-view") || requestURI.startsWith("/h2-console");
+	}
+
 	private String resolveToken(HttpServletRequest request) {
 		String jwt = request.getHeader("Authorization");
 
@@ -98,5 +98,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 		}
 		return null;
 	}
+
 
 }
